@@ -85,6 +85,7 @@ protected:
   virtual float _noise_filter(float n);
 
 private:
+  int fill_from;
   SimplexNoise* sn;
   Chamber flood_fill(Point2d pstart, BBox area, int fill_to, std::vector<int>* area_data);
 };

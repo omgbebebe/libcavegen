@@ -40,8 +40,6 @@ vector<Chamber> Cavegen::get_chambers_in(BBox rect)
 Chamber Cavegen::flood_fill(Point2d pstart, BBox area, int fill_to, vector<int>* area_data)
 {
   Chamber ch;
-  int fill_from = area_data->at(xy2ndx(pstart, area.p0, area.width));
-
   set<Point2d> queued;
   queue<Point2d> q;
   q.push(pstart);
@@ -66,8 +64,7 @@ Chamber Cavegen::flood_fill(Point2d pstart, BBox area, int fill_to, vector<int>*
       };
 
     for (Point2d n : neighbors){
-      int noise = noise2d(n.x, n.y);
-      if (noise == fill_from && (queued.count(n) == 0)){
+      if ((queued.count(n) == 0) && noise2d(n.x, n.y) == fill_from){
 	queued.insert(n);
 	q.push(n);
 	ch.push_point(n);
@@ -109,6 +106,7 @@ float Cavegen::_noise_filter(float n)
 
 Cavegen::Cavegen()
 {
+  fill_from = 255;
   scaleX = scaleY = 0.004;
   octaves = 7;
   sn = new SimplexNoise(1.0f, //frequency = 1.0f,
