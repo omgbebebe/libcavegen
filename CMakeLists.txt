@@ -15,10 +15,10 @@ add_library(simplexnoise SHARED
 
 add_library(cavegen SHARED
     cavegen.cpp
-    thirdparty/SimplexNoise/src/SimplexNoise.cpp
+	#    thirdparty/SimplexNoise/src/SimplexNoise.cpp
 )
 
-#target_link_libraries(cavegen simplexnoise)
+target_link_libraries(cavegen simplexnoise)
 
 set_target_properties(cavegen PROPERTIES
     VERSION ${PROJECT_VERSION}

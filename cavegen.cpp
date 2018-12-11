@@ -19,22 +19,21 @@ vector<Chamber> Cavegen::get_chambers_in(BBox rect)
   microseconds t1 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
   vector<int> r = get_noise_rect(rect);
   microseconds t2 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
-  cout << "get_noise_rect time: " << (t2-t1).count() << endl;
+  cout << "get_noise_rect time: " << (t2-t1).count() << " us" << endl;
   int fill_from = 255;
   int fill_to = 254;
 
   t1 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
-  for (int y = 0; y <= rect.height; y++){
-    for (int x = 0; x <= rect.width; x++){
-      int cc = r[xy2ndx(Point2d(x,y), Point2d(0,0), rect.width)];
-      if (cc == fill_from){
+  for (unsigned int y = 0; y <= rect.height; y++){
+    for (unsigned int x = 0; x <= rect.width; x++){
+      if (r[xy2ndx(Point2d(x,y), Point2d(0,0), rect.width)] == fill_from){
 	Chamber ch = flood_fill(Point2d(x,y)+rect.p0, rect, fill_to, &r);
 	chs.push_back(ch);
       }
     }
   }
   t2 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
-  cout << "flood_fill loop time: " << (t2-t1).count() << endl;
+  cout << "flood_fill loop time: " << (t2-t1).count() << " us" << endl;
   return chs;
 }
 
