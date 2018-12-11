@@ -1,0 +1,3 @@
+[submodule "thirdparty/SimplexNoise"]
+	path = thirdparty/SimplexNoise
+	url = https://github.com/SRombauts/SimplexNoise.git
