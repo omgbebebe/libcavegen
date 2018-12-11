@@ -2,6 +2,8 @@
 #include <queue>
 #include <set>
 #include <iostream>
+#include "SimplexNoise.h"
+#include <chrono>
 
 using namespace std;
 
@@ -10,12 +12,18 @@ inline int xy2ndx (Point2d p, Point2d offset, int width)
   return (p.x-offset.x) + (p.y-offset.y)*width;
 }
 
+using namespace std::chrono;
 vector<Chamber> Cavegen::get_chambers_in(BBox rect)
 {
   vector<Chamber> chs;
+  microseconds t1 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
   vector<int> r = get_noise_rect(rect);
+  microseconds t2 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
+  cout << "get_noise_rect time: " << (t2-t1).count() << endl;
   int fill_from = 255;
   int fill_to = 254;
+
+  t1 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
   for (int y = 0; y <= rect.height; y++){
     for (int x = 0; x <= rect.width; x++){
       int cc = r[xy2ndx(Point2d(x,y), Point2d(0,0), rect.width)];
@@ -25,13 +33,15 @@ vector<Chamber> Cavegen::get_chambers_in(BBox rect)
       }
     }
   }
+  t2 = duration_cast< microseconds > (system_clock::now().time_since_epoch());
+  cout << "flood_fill loop time: " << (t2-t1).count() << endl;
   return chs;
 }
 
 Chamber Cavegen::flood_fill(Point2d pstart, BBox area, int fill_to, vector<int>* area_data)
 {
   Chamber ch;
-  int fill_from = area_data->at(xy2ndx(pstart, Point2d(area.p0), area.width));
+  int fill_from = area_data->at(xy2ndx(pstart, area.p0, area.width));
 
   set<Point2d> queued;
   queue<Point2d> q;
@@ -71,11 +81,12 @@ Chamber Cavegen::flood_fill(Point2d pstart, BBox area, int fill_to, vector<int>*
 vector<int> Cavegen::get_noise_rect(BBox r)
 {
   vector<int> v;
-  for (int y = r.p0.y; y < r.height; y++){
-    for (int x = r.p0.x; x < r.width; x++){
+  for (int y = r.p0.y; y < r.p1.y; y++){
+    for (int x = r.p0.x; x < r.p1.x; x++){
       v.push_back(noise2d(x, y));
     }
   }
+  return v;
 }
 
 int Cavegen::noise2d(int x, int y)
@@ -90,9 +101,9 @@ float Cavegen::noise2dF(float x, float y)
 
 float Cavegen::_noise_filter(float n)
 {
-   if (n < (-0.9))
+   if (n < (-0.3))
 	return (1.0);
-    if (n > (0.9))
+    if (n > (0.3))
 	return 1.0;
     return -1.0;
 }
@@ -100,8 +111,11 @@ float Cavegen::_noise_filter(float n)
 Cavegen::Cavegen()
 {
   scaleX = scaleY = 0.004;
-  octaves = 6;
-  sn = new SimplexNoise();
+  octaves = 7;
+  sn = new SimplexNoise(1.0f, //frequency = 1.0f,
+			1.0f, //amplitude = 1.0f,
+			2.0f, //lacunarity = 2.0f,
+			0.5f);//persistence = 0.5f);
 }
 
 Cavegen::~Cavegen()

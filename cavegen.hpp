@@ -1,9 +1,10 @@
 #ifndef CAVEGEN_H
 #define CAVEGEN_H
-#include "SimplexNoise.h"
 #include <vector>
 #include <cmath>
 #include <ostream>
+
+class SimplexNoise;
 
 struct Point2d {
   int x,y;
@@ -50,7 +51,7 @@ struct BBox {
     return (a.p0 < b.p0 || a.p1 < b.p1);
   }
   friend std::ostream& operator<<(std::ostream& os, const BBox& b){
-    os << "bbox (" << b.p0 << ", " << b.p1 << ")";
+    os << "bbox (" << b.p0 << ", " << b.p1 << ") | " << b.width << "," << b.height;
     return os;
   }
 };
