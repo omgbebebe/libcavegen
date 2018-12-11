@@ -50,7 +50,7 @@ Chamber Cavegen::flood_fill(Point2d pstart, BBox area, int fill_to, vector<int>*
     Point2d p = q.front();
     q.pop();
     if (area.contain(p)){
-      area_data->at(xy2ndx(p, Point2d(area.p0), area.width)) = fill_to;
+      area_data->at(xy2ndx(p, area.p0, area.width)) = fill_to;
     }
 
     auto neighbors =
