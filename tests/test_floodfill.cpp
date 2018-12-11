@@ -8,7 +8,7 @@
 
 class MyCavegen : public Cavegen {
 public:
-  int width, height;
+  unsigned int width, height;
   explicit MyCavegen(std::string map_name) : Cavegen() {
     std::ifstream f;
     std::string l;
@@ -35,7 +35,7 @@ public:
 
 protected:
   int noise2d(int x, int y){
-    if (x >= 0 && x < width && y >= 0 && y < height && noise_map[x + y*width] == 'x'){
+    if (x >= 0 && x < (int)width && y >= 0 && y < (int)height && noise_map[x + y*width] == 'x'){
       return 255;
     }
     return 0;
